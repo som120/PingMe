@@ -74,5 +74,8 @@ To contribute:
 4. Push to your branch ( git push origin feature-branch )
 5. Open a Pull Reques
 
+---
 
+## 📜 License
+This project is licensed under the [MIT License](LICENSE).
 
