@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pingme/core/common/custom_button.dart';
 import 'package:pingme/core/common/custom_text_field.dart';
+import 'package:pingme/presentation/screens/auth/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -75,6 +76,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.bold,
                               ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // Navigate to signup screen
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SignupScreen(),
+                                ),
+                              );
+                            },
                         ),
                       ],
                     ),

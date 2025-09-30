@@ -54,11 +54,11 @@ class AppTheme {
     ),
 
     // Message Bubbles
-    cardTheme: CardTheme(
-      color: primaryColor.withOpacity(0.1),
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    ),
+    // cardTheme: CardTheme(
+    //   color: primaryColor.withOpacity(0.1),
+    //   elevation: 0,
+    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    // ),
 
     // Icons
     iconTheme: const IconThemeData(color: Colors.black87, size: 24),
