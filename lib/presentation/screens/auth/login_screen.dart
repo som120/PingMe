@@ -14,12 +14,37 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _emailFocus = FocusNode();
+  final _passwordFocus = FocusNode();
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email address';
+    }
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Please enter a valid email address (e.g., example@email.com)';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
   }
 
   @override
@@ -50,12 +75,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 CustomTextField(
                   controller: emailController,
                   hintText: "Email",
+                  focusNode: _emailFocus,
+                  validator: _validateEmail,
                   prefixIcon: Icon(Icons.email_outlined),
                 ),
                 SizedBox(height: 16),
                 CustomTextField(
                   controller: passwordController,
                   hintText: "Password",
+                  focusNode: _passwordFocus,
+                  validator: _validatePassword,
                   prefixIcon: Icon(Icons.lock_outline),
                   obscureText: true,
                   suffixIcon: Icon(Icons.visibility),
