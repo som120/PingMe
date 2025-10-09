@@ -12,10 +12,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
+  bool _isPasswordVisible = false;
 
   @override
   void dispose() {
@@ -52,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: Form(
+          key: _formKey,
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
@@ -86,11 +89,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   focusNode: _passwordFocus,
                   validator: _validatePassword,
                   prefixIcon: Icon(Icons.lock_outline),
-                  obscureText: true,
-                  suffixIcon: Icon(Icons.visibility),
+                  obscureText: !_isPasswordVisible,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                    icon: Icon(
+                      _isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                  ),
                 ),
                 SizedBox(height: 30),
-                CustomButton(onPressed: () {}, text: 'Login'),
+                CustomButton(
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    if (_formKey.currentState?.validate() ?? false) {}
+                  },
+                  text: 'Login',
+                ),
                 SizedBox(height: 20),
                 Center(
                   child: RichText(
