@@ -12,23 +12,51 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _emailFocus = FocusNode();
+  final _passwordFocus = FocusNode();
+  bool _isPasswordVisible = false;
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email address';
+    }
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Please enter a valid email address (e.g., example@email.com)';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Form(
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -50,18 +78,39 @@ class _LoginScreenState extends State<LoginScreen> {
                 CustomTextField(
                   controller: emailController,
                   hintText: "Email",
+                  focusNode: _emailFocus,
+                  validator: _validateEmail,
                   prefixIcon: Icon(Icons.email_outlined),
                 ),
                 SizedBox(height: 16),
                 CustomTextField(
                   controller: passwordController,
                   hintText: "Password",
+                  focusNode: _passwordFocus,
+                  validator: _validatePassword,
                   prefixIcon: Icon(Icons.lock_outline),
-                  obscureText: true,
-                  suffixIcon: Icon(Icons.visibility),
+                  obscureText: !_isPasswordVisible,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                    icon: Icon(
+                      _isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                  ),
                 ),
                 SizedBox(height: 30),
-                CustomButton(onPressed: () {}, text: 'Login'),
+                CustomButton(
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    if (_formKey.currentState?.validate() ?? false) {}
+                  },
+                  text: 'Login',
+                ),
                 SizedBox(height: 20),
                 Center(
                   child: RichText(
