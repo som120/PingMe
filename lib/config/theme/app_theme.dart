@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Define the primary color
-  static const primaryColor = Color(0xff692960);
+  static const primaryColor = Color(
+    0xff692960,
+  ); //0xff613DC1  0xff692960(original)
 
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
@@ -12,7 +14,7 @@ class AppTheme {
     colorScheme: const ColorScheme.light(
       primary: primaryColor,
       secondary: Color(0xFF8E8E93),
-      surface: Colors.white,
+      surface: Color(0xffFFFFFA),
       onSurface: Colors.black,
       // Adding complementary colors that work well with #acdde0
       tertiary: Color(0xFF7CBEC2), // Slightly darker shade for depth
