@@ -2,7 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pingme/core/common/custom_button.dart';
 import 'package:pingme/core/common/custom_text_field.dart';
+import 'package:pingme/data/services/service_locator.dart';
 import 'package:pingme/presentation/screens/auth/signup_screen.dart';
+import 'package:pingme/router/app_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -127,13 +129,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              // Navigate to signup screen
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SignupScreen(),
-                                ),
-                              );
+                              // // Navigate to signup screen
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => const SignupScreen(),
+                              //   ),
+                              // );
+                              getIt<AppRouter>().push(SignupScreen());
                             },
                         ),
                       ],
