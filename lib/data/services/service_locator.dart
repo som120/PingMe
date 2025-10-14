@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pingme/data/repositories/auth_repository.dart';
 import 'package:pingme/firebase_options.dart';
+import 'package:pingme/router/app_router.dart';
 // import 'package:youtube_messenger_app/data/repositories/chat_repository.dart';
 // import 'package:youtube_messenger_app/data/repositories/contact_repository.dart';
 // import 'package:youtube_messenger_app/logic/cubits/auth/auth_cubit.dart';
@@ -17,12 +18,12 @@ Future<void> setupServiceLocator() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // getIt.registerLazySingleton(() => AppRouter());
-  // getIt.registerLazySingleton<FirebaseFirestore>(
-  //   () => FirebaseFirestore.instance,
-  // );
-  // getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-  // getIt.registerLazySingleton(() => AuthRepository());
+  getIt.registerLazySingleton(() => AppRouter());
+  getIt.registerLazySingleton<FirebaseFirestore>(
+    () => FirebaseFirestore.instance,
+  );
+  getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+  getIt.registerLazySingleton(() => AuthRepository());
   // // getIt.registerLazySingleton(() => ContactRepository());
   // // getIt.registerLazySingleton(() => ChatRepository());
   // getIt.registerLazySingleton(
