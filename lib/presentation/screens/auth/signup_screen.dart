@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pingme/core/common/custom_button.dart';
 import 'package:pingme/core/common/custom_text_field.dart';
+import 'package:pingme/data/repositories/auth_repository.dart';
+import 'package:pingme/data/services/service_locator.dart';
 import 'package:pingme/presentation/screens/auth/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -87,6 +89,27 @@ class _SignupScreenState extends State<SignupScreen> {
     return null;
   }
 
+  Future<void> handleSignUp() async {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        await getIt<AuthRepository>().signUp(
+          fullName: nameController.text,
+          username: usernameController.text,
+          email: emailController.text,
+          phoneNumber: phoneController.text,
+          password: passwordController.text,
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    } else {
+      print("form validation failed");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,13 +189,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   prefixIcon: Icon(Icons.lock_outline),
                 ),
                 const SizedBox(height: 30),
-                CustomButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (_formKey.currentState?.validate() ?? false) {}
-                  },
-                  text: 'Create Account',
-                ),
+                CustomButton(onPressed: handleSignUp, text: 'Create Account'),
                 SizedBox(height: 20),
                 Center(
                   child: RichText(
