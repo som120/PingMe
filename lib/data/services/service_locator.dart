@@ -6,11 +6,6 @@ import 'package:get_it/get_it.dart';
 import 'package:pingme/data/repositories/auth_repository.dart';
 import 'package:pingme/firebase_options.dart';
 import 'package:pingme/router/app_router.dart';
-// import 'package:youtube_messenger_app/data/repositories/chat_repository.dart';
-// import 'package:youtube_messenger_app/data/repositories/contact_repository.dart';
-// import 'package:youtube_messenger_app/logic/cubits/auth/auth_cubit.dart';
-// import 'package:youtube_messenger_app/logic/cubits/chat/chat_cubit.dart';
-// import 'package:youtube_messenger_app/router/app_router.dart';
 
 final getIt = GetIt.instance;
 
