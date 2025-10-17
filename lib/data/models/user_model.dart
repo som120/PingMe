@@ -47,7 +47,7 @@ class UserModel {
       isOnline: isOnline ?? this.isOnline,
       lastseen: lastseen ?? this.lastseen,
       createdAt: createdAt ?? this.createdAt,
-      fcmTocken: cmTocken ?? this.fcmTocken,
+      fcmTocken: fcmTocken ?? this.fcmTocken,
       blockedUsers: blockedUsers ?? this.blockedUsers,
     );
   }
@@ -63,7 +63,7 @@ class UserModel {
       isOnline: data['isOnline'] ?? false,
       lastseen: data['lastseen'] ?? Timestamp.now(),
       createdAt: data['createdAt'] ?? Timestamp.now(),
-      fcmTocken: data['cmTocken'] ?? '',
+      fcmTocken: data['fcmTocken'] ?? '',
       blockedUsers: List<String>.from(data['blockedUsers'] ?? []),
     );
   }
@@ -77,7 +77,7 @@ class UserModel {
       'isOnline': isOnline,
       'lastseen': lastseen,
       'createdAt': createdAt,
-      'cmTocken': fcmTocken,
+      'fcmTocken': fcmTocken,
       'blockedUsers': blockedUsers,
     };
   }
