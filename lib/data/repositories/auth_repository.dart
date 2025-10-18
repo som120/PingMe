@@ -5,6 +5,8 @@ import 'package:pingme/data/models/user_model.dart';
 import 'package:pingme/data/services/base_repository.dart';
 
 class AuthRepository extends BaseRepository {
+  Stream<User?> get authStateChanges => auth.authStateChanges();
+
   Future<UserModel> signUp({
     required String fullName,
     required String username,
