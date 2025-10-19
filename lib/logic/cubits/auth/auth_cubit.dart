@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pingme/data/repositories/auth_repository.dart';
+import 'package:pingme/data/services/service_locator.dart';
 import 'package:pingme/logic/cubits/auth/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -32,5 +33,55 @@ class AuthCubit extends Cubit<AuthState> {
         emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
       }
     });
+  }
+
+  Future<void> signIn({required String email, required String password}) async {
+    try {
+      emit(state.copyWith(status: AuthStatus.loading));
+
+      final user = await _authRepository.signIn(
+        email: email,
+        password: password,
+      );
+
+      emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
+    }
+  }
+
+  Future<void> signUp({
+    required String email,
+    required String username,
+    required String fullName,
+    required String phoneNumber,
+    required String password,
+  }) async {
+    try {
+      emit(state.copyWith(status: AuthStatus.loading));
+
+      final user = await _authRepository.signUp(
+        fullName: fullName,
+        username: username,
+        email: email,
+        phoneNumber: phoneNumber,
+        password: password,
+      );
+
+      emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      //print(getIt<AuthRepository>().currentUser?.uid ?? "asasa");
+      await _authRepository.signOut();
+      //print(getIt<AuthRepository>().currentUser?.uid ?? "asasa");
+      emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
+    }
   }
 }
