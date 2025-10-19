@@ -4,6 +4,7 @@ import 'package:pingme/core/common/custom_button.dart';
 import 'package:pingme/core/common/custom_text_field.dart';
 import 'package:pingme/data/repositories/auth_repository.dart';
 import 'package:pingme/data/services/service_locator.dart';
+import 'package:pingme/logic/cubits/auth/auth_cubit.dart';
 import 'package:pingme/presentation/screens/auth/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -93,7 +94,7 @@ class _SignupScreenState extends State<SignupScreen> {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        await getIt<AuthRepository>().signUp(
+        await getIt<AuthCubit>().signUp(
           fullName: nameController.text,
           username: usernameController.text,
           email: emailController.text,
