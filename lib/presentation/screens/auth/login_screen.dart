@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pingme/core/common/custom_button.dart';
 import 'package:pingme/core/common/custom_text_field.dart';
 import 'package:pingme/data/services/service_locator.dart';
+import 'package:pingme/logic/cubits/auth/auth_cubit.dart';
 import 'package:pingme/presentation/screens/auth/signup_screen.dart';
 import 'package:pingme/router/app_router.dart';
 
@@ -49,6 +50,24 @@ class _LoginScreenState extends State<LoginScreen> {
       return 'Password must be at least 6 characters long';
     }
     return null;
+  }
+
+  Future<void> handleSignIn() async {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        await getIt<AuthCubit>().signIn(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    } else {
+      print("form validation failed");
+    }
   }
 
   @override
@@ -106,13 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 30),
-                CustomButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    if (_formKey.currentState?.validate() ?? false) {}
-                  },
-                  text: 'Login',
-                ),
+                CustomButton(onPressed: handleSignIn, text: 'Login'),
                 SizedBox(height: 20),
                 Center(
                   child: RichText(
