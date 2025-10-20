@@ -1,9 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pingme/core/common/custom_button.dart';
 import 'package:pingme/core/common/custom_text_field.dart';
+import 'package:pingme/core/utils/ui_utils.dart';
 import 'package:pingme/data/services/service_locator.dart';
 import 'package:pingme/logic/cubits/auth/auth_cubit.dart';
+import 'package:pingme/logic/cubits/auth/auth_state.dart';
+import 'package:pingme/presentation/home/home_screen.dart';
 import 'package:pingme/presentation/screens/auth/signup_screen.dart';
 import 'package:pingme/router/app_router.dart';
 
@@ -72,95 +76,115 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 30),
-                Text(
-                  "Welcome to PingMe",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Sign in to continue",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(color: Colors.grey),
-                ),
-                SizedBox(height: 30),
-                CustomTextField(
-                  controller: emailController,
-                  hintText: "Email",
-                  focusNode: _emailFocus,
-                  validator: _validateEmail,
-                  prefixIcon: Icon(Icons.email_outlined),
-                ),
-                SizedBox(height: 16),
-                CustomTextField(
-                  controller: passwordController,
-                  hintText: "Password",
-                  focusNode: _passwordFocus,
-                  validator: _validatePassword,
-                  prefixIcon: Icon(Icons.lock_outline),
-                  obscureText: !_isPasswordVisible,
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                    },
-                    icon: Icon(
-                      _isPasswordVisible
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+    return BlocConsumer<AuthCubit, AuthState>(
+      bloc: getIt<AuthCubit>(),
+      listener: (context, state) {
+        if (state.status == AuthStatus.authenticated) {
+          getIt<AppRouter>().pushAndRemoveUntil(const HomeScreen());
+        } else if (state.status == AuthStatus.error && state.error != null) {
+          UiUtils.showSnackBar(context, message: state.error!);
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          body: SafeArea(
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 30),
+                    Text(
+                      "Welcome to PingMe",
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ),
-                SizedBox(height: 30),
-                CustomButton(onPressed: handleSignIn, text: 'Login'),
-                SizedBox(height: 20),
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      text: "Don't have an account?  ",
-                      style: TextStyle(color: Colors.grey[600]),
-                      children: [
-                        TextSpan(
-                          text: " Sign up",
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              // // Navigate to signup screen
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const SignupScreen(),
-                              //   ),
-                              // );
-                              getIt<AppRouter>().push(SignupScreen());
-                            },
+                    SizedBox(height: 10),
+                    Text(
+                      "Sign in to continue",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge?.copyWith(color: Colors.grey),
+                    ),
+                    SizedBox(height: 30),
+                    CustomTextField(
+                      controller: emailController,
+                      hintText: "Email",
+                      focusNode: _emailFocus,
+                      validator: _validateEmail,
+                      prefixIcon: Icon(Icons.email_outlined),
+                    ),
+                    SizedBox(height: 16),
+                    CustomTextField(
+                      controller: passwordController,
+                      hintText: "Password",
+                      focusNode: _passwordFocus,
+                      validator: _validatePassword,
+                      prefixIcon: Icon(Icons.lock_outline),
+                      obscureText: !_isPasswordVisible,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 30),
+                    CustomButton(
+                      onPressed: handleSignIn,
+                      text: 'Login',
+                      child: state.status == AuthStatus.loading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              "Login",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Don't have an account?  ",
+                          style: TextStyle(color: Colors.grey[600]),
+                          children: [
+                            TextSpan(
+                              text: " Sign up",
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // // Navigate to signup screen
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => const SignupScreen(),
+                                  //   ),
+                                  // );
+                                  getIt<AppRouter>().push(SignupScreen());
+                                },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
